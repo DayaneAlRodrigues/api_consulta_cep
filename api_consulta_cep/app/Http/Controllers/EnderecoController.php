@@ -8,9 +8,10 @@ use App\Models\Endereco;
 
 class EnderecoController extends Controller
 {
-     public function __construct(
+    public function __construct(
         private CepService $cepService
-    ) {}
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -26,12 +27,12 @@ class EnderecoController extends Controller
     public function store(Request $request)
     {
         $dados = $request->validate([
-            'cep'=>'required|string'
+            'cep' => 'required|string'
         ]);
 
 
         $cep = $this->cepService->consultarESalvar($dados['cep']);
-        return response()->json($cep,201);
+        return response()->json($cep, 201);
     }
 
     /**
@@ -39,13 +40,15 @@ class EnderecoController extends Controller
      */
     public function show(string $cep)
     {
-        $endereco = Endereco::where('cep',$cep)->first();
-        if($endereco){
-            return response()->json($endereco,200);
-        }
-        $endereco = $this->cepService->consultarESalvar($cep);
-        return response()->json($endereco,200);
+        $endereco = Endereco::where('cep', $cep)->first();
 
+        if ($endereco) {
+            return response()->json($endereco, 200);
+        }
+
+        $endereco = $this->cepService->consultarESalvar($cep);
+
+        return response()->json($endereco, 200);
     }
 
     /**
@@ -54,23 +57,23 @@ class EnderecoController extends Controller
     public function update(Request $request, Endereco $endereco)
     {
         $dados = $request->validate([
-            'cep'=>'required|string'
+            'cep' => 'required|string'
         ]);
 
         $enderecoAtualizado = $this->cepService->consultarCep($dados['cep']);
 
-        if(isset($enderecoAtualizado['erro'])&& $enderecoAtualizado['erro'] ===true){
+        if (isset($enderecoAtualizado['erro']) && $enderecoAtualizado['erro'] === true) {
             return response()->json([
-            'message' => 'CEP não encontrado na ViaCEP.'
-                ], 404);
+                'message' => 'CEP não encontrado na ViaCEP.'
+            ], 404);
         }
 
         $endereco->update([
             'cep' => $enderecoAtualizado['cep'],
-            'logradouro'=>$enderecoAtualizado['logradouro'],
-            'bairro'=>$enderecoAtualizado['bairro'],
-            'localidade'=>$enderecoAtualizado['localidade'],
-            'uf'=>$enderecoAtualizado['uf']
+            'logradouro' => $enderecoAtualizado['logradouro'],
+            'bairro' => $enderecoAtualizado['bairro'],
+            'localidade' => $enderecoAtualizado['localidade'],
+            'uf' => $enderecoAtualizado['uf']
         ]);
 
         return response()->json($endereco);
@@ -84,7 +87,7 @@ class EnderecoController extends Controller
     {
         $endereco->delete();
         return response()->json([
-            'message'=>'Endereco excluido'
+            'message' => 'Endereco excluido'
         ]);
     }
 }

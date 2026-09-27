@@ -12,8 +12,13 @@ class Endereco extends Model
 
     protected $primaryKey = 'cep';
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public $timestamps=false;
     protected $fillable = [
+        'cep',
         'logradouro',
         'bairro',
         'localidade',
